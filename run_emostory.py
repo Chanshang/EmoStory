@@ -210,7 +210,7 @@ def load_model():
 
     device_1 = "cuda:0"
     device_2 = "cuda:1"
-    flux_id = "black-forest-labs/FLUX.1-dev"
+    flux_id = "/mnt/d/models/FLUX.1-dev"
 
     text_encoder = CLIPTextModel.from_pretrained(
         flux_id, subfolder="text_encoder", torch_dtype=torch.bfloat16,

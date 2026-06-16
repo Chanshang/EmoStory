@@ -169,8 +169,18 @@ def count_clusters(mask):
 
 
 def otzu_binarize(image):
+    image = np.asarray(image, dtype=np.float32)
+    image = np.nan_to_num(image, nan=0.0, posinf=0.0, neginf=0.0)
+
+    # 中文注释：归一化前先处理空图、常量图和非有限值，避免除零产生 NaN 后传入 Otsu。
+    image_min = float(image.min())
+    image_max = float(image.max())
+    value_range = image_max - image_min
+    if not np.isfinite(value_range) or value_range <= 1e-8:
+        return np.zeros_like(image, dtype=bool), 0.0
+
     # Normalize image between 0 and 1
-    image = (image - image.min()) / (image.max() - image.min())
+    image = (image - image_min) / value_range
     # Threshold the image to separate clumps
     thresh = threshold_otsu(image)
     _, binary = cv2.threshold(image, thresh, 1, cv2.THRESH_BINARY)
